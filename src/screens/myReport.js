@@ -38,7 +38,7 @@ const MyReport = () => {
       const endDate = moment(new Date(selectedMonth))
         .endOf("month")
         .format("YYYY-MM-DD hh:mm");
-      const data = await allReports({startDate,endDate,user:user._id});
+      const data = await allReports({startDate,endDate});
       let totalMonthlyExpenses=0;
        let totalMonths=0;
        data.data.map(itm=>{
@@ -54,7 +54,7 @@ const MyReport = () => {
             total:((perUserFoodExp*itm.totalNumberOfDays)+itm.totalOtherExpense)-itm.totalSpend.toFixed(2)
         })
       })
-      setTableData(newRecord)
+      setTableData(newRecord.filter(itm=>itm._id==user._id))
       setLoading(false);
     } catch (err) {
       toast(err.message);
