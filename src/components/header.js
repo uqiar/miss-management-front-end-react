@@ -1,10 +1,30 @@
 import react from 'react';
 import tokenStorage from "../services/tokenStorage"
 import { useNavigate } from 'react-router-dom';
+import { Button ,Modal} from 'antd';
+import { PoweroffOutlined,ExclamationCircleFilled } from '@ant-design/icons';
 
 const Header=()=>{
+    const { confirm } = Modal;
+
     const navigate=useNavigate()
     const user=tokenStorage.getUserInfo()
+    const onConfirmModal = (record) => {
+        confirm({
+          title: "Confirm Logout!",
+          icon: <ExclamationCircleFilled />,
+          okText: "Yes",
+          okType: "danger",
+          cancelText: "No",
+          onOk() {
+            localStorage.clear();
+         window.location.reload();
+          },
+          onCancel() {
+            console.log("Cancel");
+          },
+        });
+      };
     return(
         <div style={{
             backgroundColor:'black',
@@ -32,12 +52,10 @@ const Header=()=>{
     <div style={{
       color:"red"
         }}
-        onClick={()=>{
-         localStorage.clear();
-         window.location.reload();
-
-        }}
-        >LogOut</div>
+        onClick={onConfirmModal}> <Button
+        type="primary"
+        icon={<PoweroffOutlined />}
+      /></div>
      </div>
 
      

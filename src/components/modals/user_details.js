@@ -17,7 +17,7 @@ const DetailsModal=({show,setShow,selectedObj})=>{
               <div style={{zIndex:999}}>
         <div style={{display:'flex',justifyContent:"space-between",fontWeight:"bold"}}>
             <div>Food Expense</div>
-            <div>{"+"+selectedObj.expense}</div>
+            <div>{"+"+(+selectedObj.expense-selectedObj.totalOtherExpense)}</div>
         </div>
         {
             selectedObj.otherExpenses?.map((itm,key)=>(
@@ -51,7 +51,7 @@ const DetailsModal=({show,setShow,selectedObj})=>{
          fontSize:"20px",
          transform:"rotate(300deg)",
          WebkitTransform:"rotate(300deg)"
-     }}>{"NOT PAYED"}</p>
+     }}>{selectedObj.config.length&&selectedObj.config[0].payed? "Payed":"NOT PAYED"}</p>
 	</div>
         </div>
       </Modal>

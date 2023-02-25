@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { allReports } from "../services/api";
+import { allReports,markePayedUnpayed } from "../services/api";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import moment from "moment";
@@ -97,7 +97,7 @@ const Report = () => {
         render: (_, record) => (
           <>
               <Checkbox
-                onChange={() => onConfirmModal(record)}
+                onChange={() => onConfirmModal(record,record?.config[0]?.payed)}
                 checked={record?.config[0]?.payed}
               />
             
@@ -106,18 +106,33 @@ const Report = () => {
       },
   ]
 
-   const handlePay=()=>{
-
+   const handlePay=async(record,payed)=>{
+    try{
+      setLoading(true)
+     let data={payed:!payed}
+     if(record.config.length){
+       data.id=record.config[0]._id
+     }else{
+      data.date=new Date(selectedMonth);
+      data.user=record._id
+     }
+     await markePayedUnpayed(data)
+     onFetchAllReports()
+     setLoading(false)
+    }
+    catch(err){
+      setLoading(false)
+    }
    }
-  const onConfirmModal = (record) => {
+  const onConfirmModal = (record,payed) => {
     confirm({
-      title: "Are you sure",
+      title:!payed?"Marked Payed":"Marked Unpayed",
       icon: <ExclamationCircleFilled />,
       okText: "Yes",
       okType: "danger",
       cancelText: "No",
       onOk() {
-        handlePay(record);
+        handlePay(record,payed);
       },
       onCancel() {
         console.log("Cancel");

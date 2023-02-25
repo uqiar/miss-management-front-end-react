@@ -6,7 +6,7 @@ const Card=({title,icon,iconBgColor,action})=>{
       <div>
       {/* <p style={{color:"#6c757d"}}>users</p> */}
       <h2 style={{
-          ontSize: "16px",
+          fontSize: "16px",
           marginBottom: "0.5rem",
           fontFamily: "inherit",
           fontWeight: "500",

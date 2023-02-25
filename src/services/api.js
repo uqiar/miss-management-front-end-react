@@ -70,3 +70,6 @@ export const updateOtherExpense = async (id,data) => {
 export const deleteOtherExpense = async (id) => {
     return await resolve(axios.delete(apiBase + `otherExpense/delete/${id}`).then(res => res.data))
 }
+export const markePayedUnpayed = async (data) => {
+    return await resolve(axios.put(apiBase + `monthlyConfig/payedUnpayed`,data).then(res => res.data))
+}

@@ -92,7 +92,7 @@ const ManageUser = () => {
             style={{ cursor: "pointer" }}
             onClick={() => {
               setSelectedObj(record);
-              showDeleteConfirm();
+              showDeleteConfirm(record);
             }}
           >
             <DeleteFilled style={{ color: "orange", fontSize: "16px" }} />
@@ -103,10 +103,10 @@ const ManageUser = () => {
   ];
 
 
-  const handleDelete = async () => {
+  const handleDelete = async (record) => {
     try {
       setLoading(true);
-      await deleteUser(selectedObj._id)
+      await deleteUser(record._id)
       setLoading(false);
       onFetchUsers();
     } catch (err) {
@@ -115,7 +115,7 @@ const ManageUser = () => {
       setLoading(false);
     }
   };
-  const showDeleteConfirm = () => {
+  const showDeleteConfirm = (record) => {
     confirm({
       title: "Are you sure delete this task?",
       icon: <ExclamationCircleFilled />,
@@ -124,7 +124,7 @@ const ManageUser = () => {
       okType: "danger",
       cancelText: "No",
       onOk() {
-        handleDelete();
+        handleDelete(record);
       },
       onCancel() {
         console.log("Cancel");
