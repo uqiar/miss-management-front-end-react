@@ -287,7 +287,7 @@ const OtherExpense = () => {
              mode="multiple"
             status={!addFrom.user ? "error" : ""}
             style={{ width: "100%" }}
-            showSearch={true}
+            showSearch={false}
             filterOption={(input, option) =>
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
