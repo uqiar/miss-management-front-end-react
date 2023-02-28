@@ -6,7 +6,7 @@ import moment from "moment";
 import { DatePicker, Checkbox, Table, Spin, Modal,Input } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import DetailsModal from '../components/modals/user_details';
-
+import { roundeNumber } from '../utils/helper';
 const monthFormat = "MM/YYYY";
 
 const Report = () => {
@@ -87,7 +87,7 @@ const Report = () => {
         dataIndex: "total",
         key: "total",
         render: (_, record) => (
-        <div style={{fontWeight:"bold",color:record.total>=0?"black":"red"}} >{record.total}</div>
+        <div style={{fontWeight:"bold",color:record.total>=0?"black":"red"}} >{roundeNumber(record.total)}</div>
         )
       },
       {

@@ -202,7 +202,7 @@ const Configure = () => {
         onChange={handleTableChange}
       />
       {showUpdateModal&&<Modal 
-      title="Basic Modal" 
+      title="Edit Days" 
       open={showUpdateModal} 
       onOk={()=>{
           if(!daysUpdate)

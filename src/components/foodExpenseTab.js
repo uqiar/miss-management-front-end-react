@@ -48,6 +48,7 @@ const DailyEntry = () => {
   const [tableLoading, setTableLoading] = useState(false);
   const [selectedObj, setSelectedObj] = useState({});
   const [month, setMonth] = useState(moment().format(monthFormat));
+  const [allData,setAllData]=useState([])
   useEffect(() => {
     onFetchUsers();
   }, []);
@@ -69,9 +70,12 @@ const DailyEntry = () => {
   };
   const onFetchUsers = async () => {
     try {
+      setLoading(true)
       const data = await getUsersList();
       setAllUsers(data.data);
+      setLoading(false)
     } catch (err) {
+      setLoading(false)
       toast(err?.message);
     }
   };
@@ -84,9 +88,17 @@ const DailyEntry = () => {
       setTableLoading(true);
       let query={startDate,endDate}
       const data=await getItem(query)
-      setData(data.data?.map(itm=>{
-        return {...itm,user:itm?.userName,date:formateDate(itm.date)}
-      }));
+      let mapResult=data.data?.map(itm=>{
+        return {...itm,user:itm?.userName,userID:itm?.user?._id,date:formateDate(itm.date)}
+      })
+      setData(mapResult);
+      setAllData(mapResult)
+      setTableParams({
+        pagination: {
+          current: 1,
+          pageSize: 5,
+        }
+      })
       setTableLoading(false);
     } catch (err) {
       console.log(err);
@@ -213,7 +225,21 @@ const DailyEntry = () => {
     }
   };
 
-  const handleSearch = () => {};
+  const handleSearch = (e) => {
+    if(e){
+      const filterData=allData.filter(itm=>itm.userID==e)
+      setData(filterData)
+    }else{
+      setData(allData)
+    }
+    setTableParams({
+      pagination: {
+        current: 1,
+        pageSize: 5,
+      }
+    })
+  };
+  console.log("my data",allData)
 
   const handleMonthChange = (e, date) => {
     const startOfMonth = moment(new Date(e)).startOf("month").format("YYYY-MM-DD hh:mm");
@@ -225,15 +251,23 @@ const DailyEntry = () => {
   return (
     <div style={{ position: "relative" }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
-        <div>
-          <Search
-            placeholder="Search Name"
+      <Select
             allowClear
-            enterButton="Search"
-            size="large"
-            onSearch={handleSearch}
-          />
-        </div>
+            style={{ width: "50%" }}
+            showSearch={true}
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            //value={addFrom.user}
+            placeholder={"Select user"}
+            onChange={handleSearch}
+          >
+            {allUsers.map((usr, key) => (
+              <Option key={"option" + key} value={usr._id}>
+                {usr.name}
+              </Option>
+            ))}
+          </Select>
         <DatePicker
           allowClear={false}
           onChange={(e, date) => {

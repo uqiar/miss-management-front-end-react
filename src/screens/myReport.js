@@ -6,6 +6,8 @@ import moment from "moment";
 import { DatePicker, Table, Modal,Button } from "antd";
 import DetailsModal from '../components/modals/user_details';
 import MyContext  from '../context/appContext';
+import { roundeNumber } from '../utils/helper';
+import { EyeOutlined } from '@ant-design/icons';
 
 const monthFormat = "MM/YYYY";
 
@@ -77,7 +79,7 @@ const MyReport = () => {
         dataIndex: "total",
         key: "total",
         render: (_, record) => (
-        <div style={{fontWeight:"bold",color:record.total>=0?"black":"red"}} >{record.total}</div>
+        <div style={{fontWeight:"bold",color:record.total>=0?"black":"red"}} >{roundeNumber(record.total)}</div>
         )
       },
       {
@@ -97,10 +99,12 @@ const MyReport = () => {
         key: "details",
         render: (_, record) => (
           <>
-                <Button onClick={()=>{
+                    <Button onClick={()=>{
                     setSelectedObj(record)
                     setShowDetailModal(true)
-                }} type="primary" size="small">View</Button>
+                }}type="primary" shape="round" icon={<EyeOutlined />} size="small" />
+
+               
 
           </>
         ),

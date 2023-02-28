@@ -2,6 +2,7 @@ import React from 'react'
 import { Navigate } from 'react-router-dom'
 import Header from '../header';
 import tokenStorage from '../../services/tokenStorage';
+import Footer from '../footer';
 
 function Protected({ children,adminRoute=false }) {
   const token =tokenStorage.getToken()
@@ -16,6 +17,7 @@ function Protected({ children,adminRoute=false }) {
   }}>
     <Header/>
     {children}
+    <Footer/>
   </div>
 }
 export default Protected
