@@ -73,3 +73,6 @@ export const deleteOtherExpense = async (id) => {
 export const markePayedUnpayed = async (data) => {
     return await resolve(axios.put(apiBase + `monthlyConfig/payedUnpayed`,data).then(res => res.data))
 }
+export const testApi = async () => {
+    return await resolve(axios.get("https://miss-managment-system-server.onrender.com/test").then(res => res.data))
+}

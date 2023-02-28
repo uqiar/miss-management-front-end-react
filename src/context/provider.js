@@ -2,6 +2,7 @@ import React from 'react';
 import MyContext from './appContext';
 import tokenStorage from '../services/tokenStorage';
 import { setAxiosAuthorizationHeader } from '../axiosConfig';
+import { testApi } from '../services/api';
 
 class MyProvider extends React.Component {
     state = {
@@ -12,8 +13,14 @@ class MyProvider extends React.Component {
     componentDidMount() {
         this.setState({ user: tokenStorage.getUserInfo() })
         this.setTokensFromLocalStorage(tokenStorage.getToken())
+        this.a_walk_api()
     }
-
+      a_walk_api=()=>{
+         setInterval(async() => {
+             await testApi()
+             console.log("date"+new Date()+"api call")
+         },60000);
+      }
     setTokensFromLocalStorage = (token) => {
         if (token) {
             setAxiosAuthorizationHeader(token);
