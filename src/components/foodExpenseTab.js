@@ -226,11 +226,11 @@ const DailyEntry = () => {
   };
 
   const handleSearch = (e) => {
-    if(e){
+    if(e=="All"){
+      setData(allData)
+    }else{
       const filterData=allData.filter(itm=>itm.userID==e)
       setData(filterData)
-    }else{
-      setData(allData)
     }
     setTableParams({
       pagination: {
@@ -239,7 +239,6 @@ const DailyEntry = () => {
       }
     })
   };
-  console.log("my data",allData)
 
   const handleMonthChange = (e, date) => {
     const startOfMonth = moment(new Date(e)).startOf("month").format("YYYY-MM-DD hh:mm");
@@ -262,6 +261,9 @@ const DailyEntry = () => {
             placeholder={"Select user"}
             onChange={handleSearch}
           >
+             <Option key={"option" + "all"} value={"All"}>
+                {"All"}
+              </Option>
             {allUsers.map((usr, key) => (
               <Option key={"option" + key} value={usr._id}>
                 {usr.name}

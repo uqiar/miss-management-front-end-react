@@ -13,11 +13,11 @@ function Protected({ children,adminRoute=false }) {
   
   return <div style={{
     maxWidth:"1400px",
-    margin:"0 auto"
+    margin:"0 auto",
   }}>
     <Header/>
     {children}
-    <Footer/>
+    {/* <Footer/> */}
   </div>
 }
 export default Protected
