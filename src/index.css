@@ -51,5 +51,10 @@ code {
 }
 
 
-
+.ant-table-tbody>tr>td{
+  padding: 8px 8px !important;
+}
+.ant-table-tbody .ant-table-measure-row {
+ display: none;
+}
 

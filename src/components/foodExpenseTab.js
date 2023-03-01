@@ -22,12 +22,11 @@ import dayjs from "dayjs";
 import { getUsersList, addNewItem,getItem,updateItem,deleteItem } from "../services/api";
 import { formateDate  } from '../utils/helper';
 const monthFormat = "MM/YYYY";
-
 const DailyEntry = () => {
   const { Option } = Select;
   const { confirm } = Modal;
-  const { Search } = Input;
 
+  const { Search } = Input;
   const [tableParams, setTableParams] = useState({
     pagination: {
       current: 1,
@@ -70,12 +69,12 @@ const DailyEntry = () => {
   };
   const onFetchUsers = async () => {
     try {
-      setLoading(true)
+      setTableLoading(true)
       const data = await getUsersList();
       setAllUsers(data.data);
-      setLoading(false)
+      setTableLoading(false)
     } catch (err) {
-      setLoading(false)
+      setTableLoading(false)
       toast(err?.message);
     }
   };
@@ -192,7 +191,8 @@ const DailyEntry = () => {
   };
 
   const handleSubmit = async () => {
-    try {
+    const date=moment(addFrom.date).format("YYYY-MM-DD");
+    try { 
       if (!addFrom.item || !addFrom.amount || !addFrom.user) {
         return;
       }
@@ -200,11 +200,11 @@ const DailyEntry = () => {
       if (selectedObj._id) {
           const findCurrentUser=allUsers.find(itm=>itm.name==addFrom.user)
         //udpate record
-         await updateItem(selectedObj._id,{...addFrom,amount:+addFrom.amount,user:findCurrentUser._id})
+         await updateItem(selectedObj._id,{...addFrom,date,amount:+addFrom.amount,user:findCurrentUser._id})
         toast("Updated successfully");
       } else {
         //add new record
-        await addNewItem({...addFrom,amount:+addFrom.amount});
+        await addNewItem({...addFrom,date,amount:+addFrom.amount});
         toast("Added successfully");
       }
 

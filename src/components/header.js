@@ -54,6 +54,7 @@ const Header=()=>{
         }}
         onClick={onConfirmModal}> <Button
         type="primary"
+        danger
         icon={<PoweroffOutlined />}
       /></div>
      </div>
