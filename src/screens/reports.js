@@ -21,6 +21,11 @@ const Report = () => {
       pageSize: 5,
     },
   });
+  const [totalCalReport,setTotalCalReport]=useState({
+    total:0,
+    collected:0,
+    pendings:0
+  })
   const [selectedObj,setSelectedObj]=useState({})
   useEffect(() => {
     onFetchAllReports();
@@ -44,13 +49,22 @@ const Report = () => {
        })
        const perUserFoodExp=totalMonthlyExpenses/totalMonths;
        const newRecord=[];
+       let totalAmount=0,totalCollections=0,totalPending=0;
       data.data.map(itm=>{
-          //if(itm.config.length)
+         const total=((perUserFoodExp*itm.totalNumberOfDays)+itm.totalOtherExpense)-itm.totalSpend.toFixed(2)
+        if(total>0){
+         totalAmount+=total;
+         if(itm.config[0]?.payed)
+         totalCollections+=total;
+         else
+         totalPending+=total;
+        }
         newRecord.push({...itm,
             expense:((perUserFoodExp*itm.totalNumberOfDays)+itm.totalOtherExpense).toFixed(2),
-            total:((perUserFoodExp*itm.totalNumberOfDays)+itm.totalOtherExpense)-itm.totalSpend.toFixed(2)
+            total
         })
       })
+      setTotalCalReport({total:totalAmount,collected:totalCollections,pendings:totalPending})
       setTableData(newRecord)
       setLoading(false);
     } catch (err) {
@@ -181,6 +195,23 @@ const Report = () => {
            selectedObj={selectedObj}
           />
       }
+      <div style={{padding:"0 15px",lineHeight:"30px"}}>
+        <div style={{display:"flex",justifyContent:"space-between"}}>
+          <label>Total:</label>
+          <label style={{fontWeight:"bold"}}>{roundeNumber(totalCalReport.total)}</label>
+        </div>
+
+        <div style={{display:"flex",justifyContent:"space-between"}}>
+          <label>Collected:</label>
+          <label style={{fontWeight:"bold"}}>{roundeNumber(totalCalReport.collected)}</label>
+        </div>
+
+        <div style={{display:"flex",justifyContent:"space-between"}}>
+          <label>Pendings:</label>
+          <label style={{fontWeight:"bold"}}>{roundeNumber(totalCalReport.pendings)}</label>
+        </div>
+
+      </div>
   </>;
 };
 
