@@ -1,6 +1,6 @@
 import React ,{useContext}from 'react';
 import Card from '../components/dashboard_card';
-import { DatabaseOutlined,UserAddOutlined,SettingOutlined,FileProtectOutlined,LoginOutlined,SnippetsOutlined     } from "@ant-design/icons";
+import { DatabaseOutlined,UserAddOutlined,SettingOutlined,FileProtectOutlined,LoginOutlined,SnippetsOutlined ,ReadOutlined    } from "@ant-design/icons";
 import { useNavigate } from 'react-router-dom';
 import MyContext  from '../context/appContext';
 
@@ -54,6 +54,14 @@ const Dashboard=()=>{
             adminOnly:true,
             iconBgColor:"rgb(247 4 205/31%)",
             action:()=>{navigate("/report")}
+        },
+        {
+            isAdmin:true,
+            title:"My Personal",
+            icon: <ReadOutlined color='red' style={{ fontSize: '16px', color: "rgb(236 11 185)" }}/>,
+            adminOnly:false,
+            iconBgColor:"rgb(236 11 185/31%)",
+            action:()=>{navigate("/myPersonal")}
         }
     ]
     return(

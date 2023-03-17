@@ -9,6 +9,7 @@ import MonthlyConfigure from "../../screens/monthly-configure";
 import Reports from "../../screens/reports";
 import MySpending from "../../screens/mySpending";
 import MyReport from "../../screens/myReport";
+import MyPersonal from "../../screens/myPersonal";
 
 export default function RoutesWrapper() {
   return (
@@ -69,6 +70,14 @@ export default function RoutesWrapper() {
             element={
               <Protected>
                 <ManageUser />
+              </Protected>
+            }
+          />
+          <Route
+            path="/myPersonal"
+            element={
+              <Protected>
+                <MyPersonal />
               </Protected>
             }
           />

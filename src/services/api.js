@@ -76,3 +76,25 @@ export const markePayedUnpayed = async (data) => {
 export const testApi = async () => {
     return await resolve(axios.get("https://miss-managment-system-server.onrender.com/test").then(res => res.data))
 }
+
+export const getAllUserBookes = async () => {
+    return await resolve(axios.get(apiBase + `myBook/all`).then(res => res.data))
+}
+export const addNewAccount = async (data) => {
+    return await resolve(axios.post(apiBase + `myBook/new`,data).then(res => res.data))
+}
+export const deleteAcountBook = async (id) => {
+    return await resolve(axios.delete(apiBase + `myBook/delete/${id}`).then(res => res.data))
+}
+export const addAmount = async (data,id) => {
+    return await resolve(axios.post(apiBase + `myBook/addAmount/${id}`,data).then(res => res.data))
+}
+export const receiveAmount = async (data,id) => {
+    return await resolve(axios.post(apiBase + `myBook/receiveAmount/${id}`,data).then(res => res.data))
+}
+export const deleteAddAmount = async (data,id) => {
+    return await resolve(axios.post(apiBase + `myBook/deleteAddAmount/${id}`,data).then(res => res.data))
+}
+export const deleteColectAmount = async (data,id) => {
+    return await resolve(axios.post(apiBase + `myBook/deleteCollectAmount/${id}`,data).then(res => res.data))
+}

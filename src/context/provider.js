@@ -13,7 +13,7 @@ class MyProvider extends React.Component {
     componentDidMount() {
         this.setState({ user: tokenStorage.getUserInfo() })
         this.setTokensFromLocalStorage(tokenStorage.getToken())
-        this.a_walk_api()
+       // this.a_walk_api()
     }
       a_walk_api=()=>{
          setInterval(async() => {
