@@ -21,6 +21,7 @@ const MyPersonal = () => {
       pageSize: 5,
     },
   });
+  const [reportCal,setReportCal]=useState({needToCollect:0,needToReturn:0})
   const [showAddNewAcountModal, setShowAddNewAcountModal] = useState(false);
   const [deleteLoading, setDeleteLoading] = useState(false);
   const [selectedObj, setSelectedObj] = useState({});
@@ -37,6 +38,16 @@ const MyPersonal = () => {
     try {
       setLoading(true);
       const data = await getAllUserBookes();
+      let needCollect=0;
+      let needReturn=0;
+         data.data.map(itm=>{
+           if(itm.subTotal>=0){
+             needCollect+=itm.subTotal
+           }else{
+             needReturn+=itm.subTotal
+           }
+         })
+         setReportCal({needToCollect:needCollect,needToReturn:needReturn})
       setTabData(data.data);
       setLoading(false);
     } catch (err) {
@@ -174,6 +185,17 @@ const MyPersonal = () => {
         onChange={handleTableChange}
         scroll={{ x: "100%" }}
       />
+
+      <div style={{margin:"0 30px",lineHeight:"40px"}}>
+        <div style={{display:"flex",justifyContent:'space-between'}}>
+          <label>Need to collect:</label>
+          <label style={{fontSize:"22px"}}>{reportCal.needToCollect}</label>
+        </div>
+        <div style={{display:"flex",justifyContent:'space-between'}}>
+          <label>Need to return:</label>
+          <label style={{fontSize:"22px"}}>{reportCal.needToReturn}</label>
+        </div>
+      </div>
       {showAddNewAcountModal && (
         <AddNewAcountModal
           show={showAddNewAcountModal}
