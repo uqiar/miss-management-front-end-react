@@ -71,7 +71,7 @@ const CollectAmount = ({ show, hide, reFetch,allUsers=[] }) => {
         <Input
           status={!formData.amount ? "error" : ""}
           size="large"
-          placeholder="New Acount Name"
+          placeholder="Enter Amount"
           value={formData.name}
           type="number"
           min={0}

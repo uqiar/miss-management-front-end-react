@@ -1,13 +1,27 @@
-import react from 'react';
+import react,{useState} from 'react';
 import tokenStorage from "../services/tokenStorage"
 import { useNavigate } from 'react-router-dom';
 import { Button ,Modal} from 'antd';
 import { PoweroffOutlined,ExclamationCircleFilled } from '@ant-design/icons';
+ import { userLogout } from '../services/api';
+import { toast } from 'react-toastify';
 
 const Header=()=>{
     const { confirm } = Modal;
-
+   const [loading,setLoading]=useState(false)
     const navigate=useNavigate()
+    const handleLogout= async()=>{
+      try{
+        setLoading(true)
+          await userLogout()
+          localStorage.clear();
+          window.location.reload();
+          setLoading(false)
+      }catch(err){
+        toast(err.message)
+        setLoading(false)
+      }
+    }
     const user=tokenStorage.getUserInfo()
     const onConfirmModal = (record) => {
         confirm({
@@ -17,8 +31,8 @@ const Header=()=>{
           okType: "danger",
           cancelText: "No",
           onOk() {
-            localStorage.clear();
-         window.location.reload();
+            handleLogout()
+           
           },
           onCancel() {
             console.log("Cancel");
@@ -55,6 +69,7 @@ const Header=()=>{
         onClick={onConfirmModal}> <Button
         type="primary"
         danger
+        loading={loading}
         icon={<PoweroffOutlined />}
       /></div>
      </div>

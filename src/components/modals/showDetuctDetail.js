@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import {  Modal, Table } from "antd";
+import {  Modal, Table,Tooltip } from "antd";
 import Loader from "../loading";
 import { toast } from "react-toastify";
 import { deleteColectAmount } from "../../services/api";
@@ -44,6 +44,11 @@ const DetuctDetailsListOfAmount = ({ show, hide, reFetch,selectedObj }) => {
       title: "Amount",
       dataIndex: "amount",
       key: "amount",
+      render:(_,record)=>(
+        <Tooltip placement="top" title={record.note}>
+          <span style={{color:"blue"}}>{record.amount}</span>
+        </Tooltip>
+      )
     },
    
     {

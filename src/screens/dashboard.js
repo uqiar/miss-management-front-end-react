@@ -59,7 +59,7 @@ const Dashboard=()=>{
             isAdmin:true,
             title:"My Personal",
             icon: <ReadOutlined color='red' style={{ fontSize: '16px', color: "rgb(236 11 185)" }}/>,
-            adminOnly:false,
+            adminOnly:true,
             iconBgColor:"rgb(236 11 185/31%)",
             action:()=>{navigate("/myPersonal")}
         }

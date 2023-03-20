@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { DeleteOutlined, ExclamationCircleFilled,PlusOutlined,MinusOutlined } from "@ant-design/icons";
-import { Button, Table, Modal } from "antd";
+import { DeleteOutlined, ExclamationCircleFilled,PlusOutlined,MinusOutlined,SearchOutlined } from "@ant-design/icons";
+import { Button, Table, Modal,Input } from "antd";
 import { getAllUserBookes, deleteAcountBook } from "../services/api";
 import { toast } from "react-toastify";
 import AddNewAcountModal from "../components/modals/newAcount";
@@ -30,6 +30,7 @@ const MyPersonal = () => {
   const [showDetailsModal,setShowDetailsModal]=useState(false)
   const [showAddDeteailModal,setShowAddDeteailModal]=useState(false)
   const [showDeductDeteailModal,setShowDeductDeteailModal]=useState(false)
+  const [allRecord,setAllRecord]=useState([])
   useEffect(() => {
     onFetchAllBookes();
   }, []);
@@ -49,6 +50,7 @@ const MyPersonal = () => {
          })
          setReportCal({needToCollect:needCollect,needToReturn:needReturn})
       setTabData(data.data);
+      setAllRecord(data.data)
       setLoading(false);
     } catch (err) {
       setLoading(false);
@@ -98,11 +100,11 @@ const MyPersonal = () => {
           <DeleteOutlined  onClick={() => {
               setSelectedObj(record);
               showDeleteConfirm(record);
-            }} style={{background:"#555050",padding:"2px",borderRadius:'3px',color:"white",marginRight:"5px"}}/>
+            }} style={{background:"#555050",padding:"2px",borderRadius:'3px',color:"white",marginRight:"8px"}}/>
              <PlusOutlined  onClick={() => {
               setSelectedObj(record);
               setShowAddDeteailModal(true);
-            }} style={{background:"#555050",padding:"2px",borderRadius:'3px',color:"white",marginRight:"5px"}}/>
+            }} style={{background:"#555050",padding:"2px",borderRadius:'3px',color:"white",marginRight:"8px"}}/>
              <MinusOutlined  onClick={() => {
               setSelectedObj(record);
               setShowDeductDeteailModal(true);
@@ -142,6 +144,17 @@ const MyPersonal = () => {
       },
     });
   };
+
+  const handleSearchName=(e)=>{
+    let toSearch = e.target.value.toLowerCase();
+    if(!toSearch)
+    return setTabData(allRecord)
+    let result = allRecord.filter(o => {
+      let isFind = o.name.toLowerCase().includes(toSearch);
+      if (isFind) return true;
+    });
+    setTabData(result);
+  }
   return (
     <div>
       <div
@@ -186,7 +199,7 @@ const MyPersonal = () => {
         scroll={{ x: "100%" }}
       />
 
-      <div style={{margin:"0 30px",lineHeight:"40px"}}>
+      <div style={{margin:"0 20px",lineHeight:"40px"}}>
         <div style={{display:"flex",justifyContent:'space-between'}}>
           <label>Need to collect:</label>
           <label style={{fontSize:"22px"}}>{reportCal.needToCollect}</label>
@@ -195,7 +208,17 @@ const MyPersonal = () => {
           <label>Need to return:</label>
           <label style={{fontSize:"22px"}}>{reportCal.needToReturn}</label>
         </div>
+
+        <div>
+        <Input
+        size="large"
+        placeholder="Search By Name"
+         prefix={<SearchOutlined />}
+         onChange={handleSearchName}
+        />
       </div>
+      </div>
+     
       {showAddNewAcountModal && (
         <AddNewAcountModal
           show={showAddNewAcountModal}

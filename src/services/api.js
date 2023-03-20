@@ -98,3 +98,7 @@ export const deleteAddAmount = async (data,id) => {
 export const deleteColectAmount = async (data,id) => {
     return await resolve(axios.post(apiBase + `myBook/deleteCollectAmount/${id}`,data).then(res => res.data))
 }
+
+export const userLogout = async (data,id) => {
+    return await resolve(axios.get(apiBase + `user/logout`).then(res => res.data))
+}
