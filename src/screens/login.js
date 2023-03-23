@@ -47,8 +47,9 @@ const Login=(props)=>{
         <div style={{
             maxWidth:"800px",
             margin:"0 auto",
-            padding:"200px 20px"
+            padding:"180px 20px"
         }}>
+          <h4 style={{color:"white",fontSize:"20px",marginBottom:"10px",fontFamily:"fantasy"}}>Persoanl E-Book</h4>
            <Form
       name="normal_login"
       className="login-form"

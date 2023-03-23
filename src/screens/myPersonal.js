@@ -190,6 +190,17 @@ const MyPersonal = () => {
           Receive Amount
         </Button>
       </div>
+
+      <div style={{margin:"10px 20px 0px",lineHeight:"40px"}}>
+        <div>
+        <Input
+        size="large"
+        placeholder="Search By Name"
+         prefix={<SearchOutlined />}
+         onChange={handleSearchName}
+        />
+      </div>
+      </div>
       <Table
         columns={columns}
         dataSource={tabData}
@@ -209,14 +220,6 @@ const MyPersonal = () => {
           <label style={{fontSize:"22px"}}>{reportCal.needToReturn}</label>
         </div>
 
-        <div>
-        <Input
-        size="large"
-        placeholder="Search By Name"
-         prefix={<SearchOutlined />}
-         onChange={handleSearchName}
-        />
-      </div>
       </div>
      
       {showAddNewAcountModal && (
