@@ -33,6 +33,7 @@ const Login=(props)=>{
       navigate('/dashboard')
       setLoading(false);
      }catch(err){
+       setLoading(false)
       toast(err.message)
      }
       

@@ -59,11 +59,11 @@ const ManageUser = () => {
       dataIndex: "userName",
       key: "userName",
     },
-    {
-      title: "Password",
-      dataIndex: "password",
-      key: "password",
-    },
+    // {
+    //   title: "Password",
+    //   dataIndex: "password",
+    //   key: "password",
+    // },
     {
       title: "Access",
       dataIndex: "access",
@@ -240,10 +240,11 @@ const ManageUser = () => {
             onChange={(e) => setAddForm({ ...addFrom, userName: e.target.value })}
           />
             <Input
+          type={selectedObj._id?"password":"text"}
             status={!addFrom.password?"error":''}
             size="large"
             placeholder="Password"
-            type="string"
+            disabled={selectedObj._id?true:false}
             value={addFrom.password}
             onChange={(e) => setAddForm({ ...addFrom, password: e.target.value })}
           />

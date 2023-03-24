@@ -5,10 +5,13 @@ import { Button ,Modal} from 'antd';
 import { PoweroffOutlined,ExclamationCircleFilled } from '@ant-design/icons';
  import { userLogout } from '../services/api';
 import { toast } from 'react-toastify';
+import UpdateUserModal from '../components/modals/updateProfile';
 
 const Header=()=>{
     const { confirm } = Modal;
    const [loading,setLoading]=useState(false)
+   const [showProfileModal,setShowProfileModal]=useState(false)
+   const [user,setUser]=useState(tokenStorage.getUserInfo())
     const navigate=useNavigate()
     const handleLogout= async()=>{
       try{
@@ -22,7 +25,6 @@ const Header=()=>{
         setLoading(false)
       }
     }
-    const user=tokenStorage.getUserInfo()
     const onConfirmModal = (record) => {
         confirm({
           title: "Confirm Logout!",
@@ -55,7 +57,7 @@ const Header=()=>{
         <div style={{
            fontWeight:"bold",
            fontSize:'22px' 
-        }}>{user?.name}</div>
+        }} onClick={()=>setShowProfileModal(true)}>{user?.name}</div>
 
      <div style={{cursor:'pointer'}}onClick={()=>{
          navigate("/dashboard")
@@ -74,7 +76,15 @@ const Header=()=>{
       /></div>
      </div>
 
-     
+     {
+       showProfileModal&&
+       <UpdateUserModal
+        show={showProfileModal}
+        hide={()=>setShowProfileModal(false)}
+        user={user}
+        setUser={setUser}
+       />
+     }
         </div>
     )
 }
