@@ -84,7 +84,7 @@ const OtherExpense = () => {
       let query={startDate,endDate}
       const data=await getOtherExpense(query)
       setData(data.data?.map(itm=>{
-        return {...itm,date:formateDate(itm.date)}
+        return {...itm,copyDate:itm.date,date:formateDate(itm.date)}
       }));
       setTableLoading(false);
     } catch (err) {
@@ -141,7 +141,7 @@ const OtherExpense = () => {
                 note:record.note,
                 amount: record.amount,
                 user: record.user.map(itm=>itm._id),
-                date: new Date(record.date),
+                date: moment(record.copyDate).format("YYYY-MM-DD"),
               });
               setShowAddModal(true);
             }}
@@ -269,6 +269,7 @@ const OtherExpense = () => {
       />
 
       <Modal
+       maskClosable={false}
         footer={false}
         title={selectedObj._id?"Update Record":"Add New Entry"}
         open={showAddModal}

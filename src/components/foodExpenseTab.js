@@ -22,6 +22,7 @@ import dayjs from "dayjs";
 import { getUsersList, addNewItem,getItem,updateItem,deleteItem } from "../services/api";
 import { formateDate  } from '../utils/helper';
 const monthFormat = "MM/YYYY";
+
 const DailyEntry = () => {
   const { Option } = Select;
   const { confirm } = Modal;
@@ -88,7 +89,7 @@ const DailyEntry = () => {
       let query={startDate,endDate}
       const data=await getItem(query)
       let mapResult=data.data?.map(itm=>{
-        return {...itm,user:itm?.userName,userID:itm?.user?._id,date:formateDate(itm.date)}
+        return {...itm,user:itm?.userName,userID:itm?.user?._id,copyDate:itm.date,date:formateDate(itm.date)}
       })
       setData(mapResult);
       setAllData(mapResult)
@@ -141,7 +142,7 @@ const DailyEntry = () => {
                 item: record.item,
                 amount: record.amount,
                 user: record.user,
-                date: new Date(record.date),
+                date:moment(record.copyDate).format("YYYY-MM-DD"),
                 userName:record.userName
               });
               setShowAddModal(true);
@@ -210,14 +211,14 @@ const DailyEntry = () => {
 
       onFetchReceipts();
       setLoading(false);
-      setShowAddModal(false);
-      setAddForm({
-        item: "",
-        amount: "",
-        user: "",
-        date: new Date(),
-        userName:""
-      });
+      // setShowAddModal(false);
+      // setAddForm({
+      //   item: "",
+      //   amount: "",
+      //   user: "",
+      //   date: new Date(),
+      //   userName:""
+      // });
     } catch (err) {
       toast(err.message)
       console.log(err);
@@ -309,11 +310,21 @@ const DailyEntry = () => {
       />
 
       <Modal
+      maskClosable={false}
         footer={false}
-        title="Add New Entry"
+        title={selectedObj._id?"Update Entry":"Add New Entry"}
         open={showAddModal}
         onOk={() => alert("submit")}
-        onCancel={() => setShowAddModal(false)}
+        onCancel={() => {
+          setAddForm({
+            item: "",
+            amount: "",
+            user: "",
+            date: new Date(),
+            userName:""
+          });
+          setShowAddModal(false)
+        }}
       >
         <Space direction="vertical" style={{ width: "100%" }} size={12}>
           <Input
