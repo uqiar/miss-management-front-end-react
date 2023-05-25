@@ -24,7 +24,8 @@ const Report = () => {
   const [totalCalReport,setTotalCalReport]=useState({
     total:0,
     collected:0,
-    pendings:0
+    pendings:0,
+    monthlyFoodExpense:0
   })
   const [selectedObj,setSelectedObj]=useState({})
   useEffect(() => {
@@ -49,7 +50,7 @@ const Report = () => {
        })
        const perUserFoodExp=totalMonthlyExpenses/totalMonths;
        const newRecord=[];
-       let totalAmount=0,totalCollections=0,totalPending=0;
+       let totalAmount=0,totalCollections=0,totalPending=0,monthlyFoodExpense=0
       data.data.map(itm=>{
          const total=((perUserFoodExp*itm.totalNumberOfDays)+itm.totalOtherExpense)-itm.totalSpend.toFixed(2)
         if(total>0){
@@ -63,8 +64,10 @@ const Report = () => {
             expense:((perUserFoodExp*itm.totalNumberOfDays)+itm.totalOtherExpense).toFixed(2),
             total
         })
+        //calculate monthly food expense
+        monthlyFoodExpense+=itm.totalSpend;
       })
-      setTotalCalReport({total:totalAmount,collected:totalCollections,pendings:totalPending})
+      setTotalCalReport({total:totalAmount,collected:totalCollections,pendings:totalPending,monthlyFoodExpense})
       setTableData(newRecord)
       setLoading(false);
     } catch (err) {
@@ -196,8 +199,12 @@ const Report = () => {
           />
       }
       <div style={{padding:"0 15px",lineHeight:"30px"}}>
+      <div style={{display:"flex",justifyContent:"space-between"}}>
+          <label>Food Expense:</label>
+          <label style={{fontWeight:"bolder",fontSize:"22px"}}>{roundeNumber(totalCalReport.monthlyFoodExpense)}</label>
+        </div>
         <div style={{display:"flex",justifyContent:"space-between"}}>
-          <label>Total:</label>
+          <label>Need To Collect:</label>
           <label style={{fontWeight:"bold"}}>{roundeNumber(totalCalReport.total)}</label>
         </div>
 
@@ -207,7 +214,7 @@ const Report = () => {
         </div>
 
         <div style={{display:"flex",justifyContent:"space-between"}}>
-          <label>Pendings:</label>
+          <label>Pending:</label>
           <label style={{fontWeight:"bold"}}>{roundeNumber(totalCalReport.pendings)}</label>
         </div>
 
