@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Space, Table, Button, Modal, Input, Select, DatePicker } from "antd";
+import { Space, Table, Button, Modal, Input, Select, Tag } from "antd";
 import { EditOutlined, PlusOutlined ,DeleteFilled,ExclamationCircleFilled} from "@ant-design/icons";
 import Loader from '../components/loading';
 import {  toast } from 'react-toastify';
@@ -19,7 +19,8 @@ const ManageUser = () => {
     userName: "",
     name: "",
      password: "",
-      role:"NORMAL"
+      role:"NORMAL",
+      active:true
   });
   const [allUsers, setAllUsers] = useState([]);
    const [loading,setLoading]=useState(false)
@@ -34,7 +35,7 @@ const ManageUser = () => {
   const onFetchUsers = async () => {
     try {
       setTableLoading(true)
-       const data=await getUsersList()
+       const data=await getUsersList({isAll:true})
       setAllUsers(data.data?.map(itm=>{
         return {...itm,userName:itm.email,access:itm.role}
       }));
@@ -69,6 +70,18 @@ const ManageUser = () => {
       dataIndex: "access",
       key: "access",
     },
+    {
+      title: "Active",
+      dataIndex: "active",
+      key: "active",
+      render:(_,record)=>(
+       record.active==true?
+       <Tag color="#108ee9">Active</Tag>:
+       record.active==false?
+       <Tag color="#f50">Inactive</Tag>:
+       <Tag color="#108ee9">Active</Tag>
+      )
+    },
 
     {
       title: "Action",
@@ -82,7 +95,8 @@ const ManageUser = () => {
               userName:record.email,
               name:record.name,
                password:record.password,
-                role:record.role
+                role:record.role,
+                active:record?.active==true?true:record?.active==false?false:true
              })
              setShowAddModal(true)
           }} />
@@ -148,8 +162,10 @@ const ManageUser = () => {
         email:addFrom.userName,
         name:addFrom.name,
         password:addFrom.password,
-        role:addFrom.role
+        role:addFrom.role,
+        active:addFrom.active
       }
+      console.log("sadfasdfasdfas",data)
       if(selectedObj._id){
         //update user
         await updateUser(selectedObj._id,data)
@@ -248,6 +264,22 @@ const ManageUser = () => {
             value={addFrom.password}
             onChange={(e) => setAddForm({ ...addFrom, password: e.target.value })}
           />
+          <Select
+            style={{ width: "100%" }}
+            showSearch={false}
+            value={addFrom.active}
+            placeholder={"Active"}
+            onChange={(e) => {
+              setAddForm({ ...addFrom, active: e });
+            }}
+          >
+              <Option key={"active" + 1} value={true}>
+                Active
+              </Option>
+              <Option key={"inactive" + 2} value={false}>
+                Inactive
+              </Option>
+          </Select>
           <Button onClick={handleSubmit} type="primary" block>
             Submit
           </Button>

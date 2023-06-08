@@ -8,6 +8,7 @@ import {
   Select,
   DatePicker,
   Tag,
+  Radio
 } from "antd";
 import {
   EditOutlined,
@@ -19,8 +20,8 @@ import moment from "moment";
 import Loader from "../components/loading";
 import { toast } from "react-toastify";
 import dayjs from "dayjs";
-import { getUsersList, addNewOtherExpense,getOtherExpense,updateOtherExpense,deleteOtherExpense } from "../services/api";
-import { formateDate  } from '../utils/helper';
+import { getUsersList, addNewOtherExpense, getOtherExpense, updateOtherExpense, deleteOtherExpense } from "../services/api";
+import { formateDate, roundeNumber } from '../utils/helper';
 const monthFormat = "MM/YYYY";
 
 const OtherExpense = () => {
@@ -47,8 +48,9 @@ const OtherExpense = () => {
   const [tableLoading, setTableLoading] = useState(false);
   const [selectedObj, setSelectedObj] = useState({});
   const [month, setMonth] = useState(moment().format(monthFormat));
+  const [isMonthly, setIsMonthly] = useState(false)
   useEffect(() => {
-    onFetchUsers();
+    onFetchUsers(new Date());
   }, []);
   useEffect(() => {
     if (allUsers.length) onFetchReceipts();
@@ -57,7 +59,7 @@ const OtherExpense = () => {
   const handleDelete = async (record) => {
     try {
       setLoading(true);
-       await deleteOtherExpense(record._id)
+      await deleteOtherExpense(record._id)
       setLoading(false);
       onFetchReceipts();
     } catch (err) {
@@ -66,9 +68,15 @@ const OtherExpense = () => {
       setLoading(false);
     }
   };
-  const onFetchUsers = async () => {
+  const onFetchUsers = async (date) => {
     try {
-      const data = await getUsersList();
+      const startDate = moment(new Date(date))
+        .startOf("month")
+        .format("YYYY-MM-DD hh:mm");
+      const endDate = moment(new Date(date))
+        .endOf("month")
+        .format("YYYY-MM-DD hh:mm");
+      const data = await getUsersList({ startDate, endDate });
       setAllUsers(data.data);
     } catch (err) {
       toast(err?.message);
@@ -76,15 +84,15 @@ const OtherExpense = () => {
   };
   const onFetchReceipts = async (startDate, endDate) => {
     try {
-      if(!startDate||!endDate){
+      if (!startDate || !endDate) {
         startDate = moment(new Date()).startOf("month").format("YYYY-MM-DD hh:mm");
         endDate = moment(new Date()).endOf("month").format("YYYY-MM-DD hh:mm");
       }
       setTableLoading(true);
-      let query={startDate,endDate}
-      const data=await getOtherExpense(query)
-      setData(data.data?.map(itm=>{
-        return {...itm,copyDate:itm.date,date:formateDate(itm.date)}
+      let query = { startDate, endDate }
+      const data = await getOtherExpense(query)
+      setData(data.data?.map(itm => {
+        return { ...itm, copyDate: itm.date, date: formateDate(itm.date) }
       }));
       setTableLoading(false);
     } catch (err) {
@@ -100,21 +108,21 @@ const OtherExpense = () => {
       key: "date",
     },
     {
-        title: "User",
-        dataIndex: "user",
-        key: "user",
-        render:(_,record)=>(
-            <span>
-             {
-                 record.user.map((usr,key)=>(
-                    <Tag color={"blue"} key={"tag"+key}>
-                    {usr.name}
-                  </Tag>
-                 ))
-             }
-            </span>
-        )
-      },
+      title: "User",
+      dataIndex: "user",
+      key: "user",
+      render: (_, record) => (
+        <span>
+          {
+            record.user.map((usr, key) => (
+              <Tag color={"blue"} key={"tag" + key}>
+                {usr.name}
+              </Tag>
+            ))
+          }
+        </span>
+      )
+    },
     {
       title: "Amount",
       dataIndex: "amount",
@@ -125,7 +133,7 @@ const OtherExpense = () => {
       dataIndex: "note",
       key: "note",
     },
-    
+
 
     {
       title: "Action",
@@ -138,9 +146,9 @@ const OtherExpense = () => {
             onClick={() => {
               setSelectedObj(record);
               setAddForm({
-                note:record.note,
-                amount: record.amount,
-                user: record.user.map(itm=>itm._id),
+                note: record.note,
+                amount: record.amount*record.user.length,
+                user: record.user.map(itm => itm._id),
                 date: moment(record.copyDate).format("YYYY-MM-DD"),
               });
               setShowAddModal(true);
@@ -190,17 +198,40 @@ const OtherExpense = () => {
 
   const handleSubmit = async () => {
     try {
+
       if (!addFrom.note || !addFrom.amount || !addFrom.user.length) {
         return;
+      }
+      let reqBody = [];
+      if (isMonthly) { 
+        let selectedUsers = {};
+        expenseDivideOnDays().map(itm => {
+          const obj = itm.days.toString();
+          if (selectedUsers[obj]) {
+            selectedUsers[obj].user.push(itm._id)
+          } else {
+            selectedUsers[obj] = {
+              user: [itm._id],
+              date: addFrom.date,
+              note: addFrom.note,
+              amount: itm.total
+            }
+          }
+        })
+        Object.entries(selectedUsers).map(([key, val], index) => {
+          reqBody.push(val)
+        })
+      } else {
+        reqBody.push({ ...addFrom, amount: (+addFrom.amount)/addFrom.user.length })
       }
       setLoading(true);
       if (selectedObj._id) {
         //udpate record
-         await updateOtherExpense(selectedObj._id,{...addFrom,amount:+addFrom.amount})
+        await updateOtherExpense(selectedObj._id, reqBody)
         toast("Updated successfully");
       } else {
         //add new record
-        await addNewOtherExpense({...addFrom,amount:+addFrom.amount});
+        await addNewOtherExpense(reqBody);
         toast("Added successfully");
       }
 
@@ -220,7 +251,7 @@ const OtherExpense = () => {
     }
   };
 
-  const handleSearch = () => {};
+  const handleSearch = () => { };
 
   const handleMonthChange = (e, date) => {
     const startOfMonth = moment(new Date(e)).startOf("month").format("YYYY-MM-DD hh:mm");
@@ -229,6 +260,28 @@ const OtherExpense = () => {
     setMonth(date);
   };
 
+  const expenseDivideOnDays = () => {
+    const findUsers = [];
+    let selectedUsers = [];
+    let totalDays = 0;
+    addFrom.user.map(itm => {
+      const find = allUsers.filter(us => us._id == itm)
+      findUsers.push(find[0])
+    })
+    findUsers.map(config => {
+      if (config.config.length) {
+        selectedUsers.push({ name: config.name, _id: config._id, days: config.config[0].totalDays })
+        totalDays += config.config[0].totalDays
+      }
+    })
+    const perDayAmount = addFrom.amount / totalDays;
+    selectedUsers.map(itm => {
+      itm.total = perDayAmount * itm.days
+    })
+    console.log("asdfasfasfasfa", selectedUsers)
+    return selectedUsers
+
+  }
   return (
     <div style={{ position: "relative" }}>
       <div style={{ display: "flex", justifyContent: "space-between" }}>
@@ -248,7 +301,7 @@ const OtherExpense = () => {
         loading={tableLoading}
         pagination={tableParams.pagination}
         onChange={handleTableChange}
-        scroll={{x:"100%"}}
+        scroll={{ x: "100%" }}
       />
       <Button
         onClick={() => {
@@ -269,23 +322,28 @@ const OtherExpense = () => {
       />
 
       <Modal
-       maskClosable={false}
+        maskClosable={false}
         footer={false}
-        title={selectedObj._id?"Update Record":"Add New Entry"}
+        title={selectedObj._id ? "Update Record" : "Add New Entry"}
         open={showAddModal}
         onOk={() => alert("submit")}
         onCancel={() => setShowAddModal(false)}
       >
         <Space direction="vertical" style={{ width: "100%" }} size={12}>
           <Input
+            style={{ width: "100%" }}
             value={moment(addFrom.date).format("YYYY-MM-DD")}
             type={"date"}
             onChange={(e) => {
+              const month1 = moment(e.target.value).format("MM")
+              const month2 = moment(addFrom.date).format("MM")
+              if (month1 !== month2)
+                onFetchUsers(e.target.value)
               setAddForm({ ...addFrom, date: e.target.value });
             }}
           />
           <Select
-             mode="multiple"
+            mode="multiple"
             status={!addFrom.user ? "error" : ""}
             style={{ width: "100%" }}
             showSearch={false}
@@ -295,27 +353,67 @@ const OtherExpense = () => {
             value={addFrom.user}
             placeholder={"Select user"}
             onChange={(e) => {
-              setAddForm({ ...addFrom, user: e});
+              setAddForm({ ...addFrom, user: e });
             }}
             options={allUsers.map((usr, key) => {
-                return {value:usr._id,label:usr.name,key:"key"+key}
+              return { value: usr._id, label: usr.name, key: "key" + key }
             })}
-        
+
           />
+
+          <Radio.Group onChange={(e) => setIsMonthly(e.target.value)} value={isMonthly}>
+            <Radio value={false}>Full Month</Radio>
+            <Radio value={true}>Days</Radio>
+          </Radio.Group>
+          <div style={{ display: "flex", columnGap: "10px" }}>
+            <Input
+              status={!addFrom.amount ? "error" : ""}
+              size="large"
+              placeholder="Total Amount"
+              type="number"
+              value={addFrom.amount}
+              onChange={(e) => setAddForm({ ...addFrom, amount: e.target.value })}
+            />
+            {!isMonthly && <label style={{ fontWeight: "bolder" }}>{roundeNumber(addFrom?.amount / addFrom.user.length) || 0}</label>}
+          </div>
+          {
+            isMonthly && <div>
+              <Table
+                columns={[
+                  {
+                    title: "Name",
+                    dataIndex: "name",
+                    key: "name",
+                  },
+                  {
+                    title: "Days",
+                    dataIndex: "days",
+                    key: "days",
+                  },
+                  {
+                    title: "Total",
+                    dataIndex: "total",
+                    key: "total",
+                    render: (_, record) => (
+                      <span>
+                        {roundeNumber(record.total)}
+                      </span>
+                    )
+                  },
+
+                ]}
+                dataSource={expenseDivideOnDays()}
+                pagination={false}
+                scroll={{ x: "100%" }}
+              />
+            </div>
+          }
           <Input
             status={!addFrom.note ? "error" : ""}
             size="large"
             placeholder="Note"
             value={addFrom.note}
             onChange={(e) => setAddForm({ ...addFrom, note: e.target.value })}
-          />
-          <Input
-            status={!addFrom.amount ? "error" : ""}
-            size="large"
-            placeholder="amount"
-            type="number"
-            value={addFrom.amount}
-            onChange={(e) => setAddForm({ ...addFrom, amount: e.target.value })}
           />
           <Button onClick={handleSubmit} type="primary" block>
             Submit

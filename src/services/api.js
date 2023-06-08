@@ -17,8 +17,8 @@ export const updateUser = async (id,data) => {
     return await resolve(axios.put(apiBase + `user/update/${id}`, data).then(res => res.data))
 }
 
-export const getUsersList = async () => {
-    return await resolve(axios.get(apiBase + `user/findAll`).then(res => res.data))
+export const getUsersList = async (data) => {
+    return await resolve(axios.post(apiBase + `user/findAll`,data).then(res => res.data))
 }
 export const addNewItem = async (data) => {
     return await resolve(axios.post(apiBase + `items/add`,data).then(res => res.data))
