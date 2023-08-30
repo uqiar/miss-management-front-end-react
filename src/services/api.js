@@ -102,3 +102,10 @@ export const deleteColectAmount = async (data,id) => {
 export const userLogout = async (data,id) => {
     return await resolve(axios.get(apiBase + `user/logout`).then(res => res.data))
 }
+
+export const getallTourFunBooking = async () => {
+    return await resolve(axios.post(apiBase + `tourfun/allBooking`).then(res => res.data))
+}
+export const updateTourFunBooking = async (id,data) => {
+    return await resolve(axios.put(apiBase + `tourfun/update/${id}`,data).then(res => res.data))
+}

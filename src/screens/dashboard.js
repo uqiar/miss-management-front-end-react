@@ -61,6 +61,13 @@ const Dashboard=()=>{
             adminOnly:true,
             iconBgColor:"rgb(236 11 185/31%)",
             action:()=>{navigate("/myPersonal")}
+        },
+        {
+            title:"Booking",
+            icon: <ReadOutlined color='red' style={{ fontSize: '16px', color: "rgb(236 11 185)" }}/>,
+            adminOnly:true,
+            iconBgColor:"rgb(236 11 185/31%)",
+            action:()=>{navigate("/tourfun")}
         }
     ]
     return(
