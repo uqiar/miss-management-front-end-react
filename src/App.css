@@ -36,3 +36,31 @@
     transform: rotate(360deg);
   }
 }
+
+
+
+@media only screen and (max-width: 500px) {
+  
+.input_mobile_class{
+  width: 100%;
+}
+}
+
+.mini_card{
+  background: #594b4b;
+    text-align: center;
+    width: 150px;
+    padding: 5px;
+    line-height: 10px;
+    border-radius: 6px;
+}
+.mini_card p{
+  color: white;
+    font-weight: bold;
+    font-size: 14px;
+}
+.mini_card span{
+  color: #7dd1ee;
+    font-weight: bold;
+    font-size: 20px;
+}

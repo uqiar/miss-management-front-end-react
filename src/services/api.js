@@ -109,3 +109,13 @@ export const getallTourFunBooking = async () => {
 export const updateTourFunBooking = async (id,data) => {
     return await resolve(axios.put(apiBase + `tourfun/update/${id}`,data).then(res => res.data))
 }
+
+export const addSafariReport = async (data) => {
+    return await resolve(axios.post(apiBase + `safariReport/add`,data).then(res => res.data))
+}
+export const getSafariReport = async (data) => {
+    return await resolve(axios.post(apiBase + `safariReport/find`,data).then(res => res.data))
+}
+export const updateSafariReport = async (id,data) => {
+    return await resolve(axios.put(apiBase + `safariReport/update/${id}`,data).then(res => res.data))
+}

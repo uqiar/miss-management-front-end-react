@@ -63,11 +63,11 @@ const Dashboard=()=>{
             action:()=>{navigate("/myPersonal")}
         },
         {
-            title:"Booking",
+            title:"Safari Report",
             icon: <ReadOutlined color='red' style={{ fontSize: '16px', color: "rgb(236 11 185)" }}/>,
             adminOnly:true,
             iconBgColor:"rgb(236 11 185/31%)",
-            action:()=>{navigate("/tourfun")}
+            action:()=>{navigate("/safari")}
         }
     ]
     return(

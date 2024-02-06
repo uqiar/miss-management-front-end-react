@@ -10,7 +10,7 @@ import Reports from "../../screens/reports";
 import MySpending from "../../screens/mySpending";
 import MyReport from "../../screens/myReport";
 import MyPersonal from "../../screens/myPersonal";
-import Tourfunbooking from "../../screens/tourfunbooking";
+import SafariReport from "../../screens/safariReport";
 
 
 export default function RoutesWrapper() {
@@ -85,10 +85,10 @@ export default function RoutesWrapper() {
           />
 
 <Route
-            path="/tourfun"
+            path="/safari"
             element={
               <Protected>
-                <Tourfunbooking />
+                <SafariReport />
               </Protected>
             }
           />
