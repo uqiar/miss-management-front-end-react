@@ -4,7 +4,7 @@ import { Table, Input, } from "antd";
 import { getSafariReport } from '../services/api';
 import { toast } from "react-toastify";
 
-const Report=()=>{
+const Report=({currentTab})=>{
     const [startDate,setStartDate]=useState(new Date(moment(new Date()).startOf("month").format("YYYY-MM-DD hh:mm")))
     const [endDate,setEndDate]=useState(new Date(moment(new Date()).endOf("month").format("YYYY-MM-DD hh:mm")))
      const [loading,setLoading]=useState(false)
@@ -17,7 +17,7 @@ const Report=()=>{
     });
     useEffect(() => {
         findSafariReport()
-    }, [startDate,endDate])
+    }, [startDate,endDate,currentTab])
 
     const findSafariReport = async () => {
         try {

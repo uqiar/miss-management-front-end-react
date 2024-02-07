@@ -8,15 +8,52 @@ const DailyEntry = () => {
     const [formData, setFormData] = useState({})
     const [date, setDate] = useState(new Date())
     const [loading, setLoading] = useState(false)
-
+    const [isOnline,setIsOnline]=useState(navigator.onLine)
     useEffect(() => {
+        const localRecord=JSON.parse(localStorage.getItem("safari"))
+        if(isOnline){
         findSafariReport()
-    }, [date])
+        if(localRecord&&localRecord.length)
+        onSaveFromLocalStorage(localRecord)
+        }else{
+         if(localRecord&&localRecord.length){
+            const dateFormate = moment(date).format("YYYY-MM-DD");
+            const findItem=localRecord.find(itm=>itm.date==dateFormate)
+            if(findItem)
+            setFormData(findItem)
+            else
+           setFormData({})
+           }
+        }
+    }, [date,isOnline])
 
+    const onSaveFromLocalStorage=async(data)=>{
+     try{
+        for(var i=0;i<=data.length-1;i++){
+            if(data[i]._id)
+            await updateSafariReport(data[i]._id, data[i])
+            else
+            await addSafariReport(data[i])
+            toast("Backup Success!", { type: "success" })
+        }
+        localStorage.removeItem("safari")
+     }catch(err){
+        toast(err.message)
+     }
+    }
+    useEffect(()=>{
+        window.ononline = (event) => {
+         setIsOnline(true)
+        };
+      
+        window.onoffline = (event) => {
+            setIsOnline(false)
+            
+        };
+    },[])
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value })
     }
-
 
     const findSafariReport = async () => {
         try {
@@ -33,13 +70,25 @@ const DailyEntry = () => {
     }
     const handleSubmit = async () => {
         try {
-            //    if(navigator.onLine){
-            //     toast("Online!",{type:"success"})
-            //    }else{
-            //     toast("offline!",{type:"success"})
-            //    }
-            //     return
+           
             const dateFormat = moment(date).format("YYYY-MM-DD");
+            if(!isOnline){
+                let newRecord=[];
+            const localRecord=JSON.parse(localStorage.getItem("safari"))
+            if(localRecord&&localRecord?.length){
+                newRecord=localRecord?.map(itm=>{
+                    if(itm.date==dateFormat)
+                    return {...formData,date:dateFormat}
+                    else
+                    return itm
+                })
+            }else{
+                newRecord.push({...formData,date:dateFormat})
+            }
+            localStorage.setItem("safari",JSON.stringify(newRecord))
+            toast("Local Added Success!", { type: "success" })
+            return
+            }
             if (formData._id) {
                 await updateSafariReport(formData._id, { ...formData, date: dateFormat })
                 toast("Updated Success!", { type: "success" })
@@ -62,6 +111,7 @@ const DailyEntry = () => {
             <div style={{ marginBottom: "10px" }}>
                 <span>Date</span>
                 <Input
+                disabled={!isOnline}
                     value={moment(date).format("YYYY-MM-DD")}
                     type={"date"}
                     name="date"
