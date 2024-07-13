@@ -72,6 +72,11 @@ const Report=({currentTab})=>{
         dataIndex: "salik",
         key: "salik",
       },
+      {
+        title: "Other",
+        dataIndex: "other",
+        key: "other",
+      },
      
   ]
 

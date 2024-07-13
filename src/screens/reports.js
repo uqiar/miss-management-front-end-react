@@ -6,12 +6,16 @@ import moment from "moment";
 import { DatePicker, Checkbox, Table, Spin, Modal,Input } from "antd";
 import { ExclamationCircleFilled } from "@ant-design/icons";
 import DetailsModal from '../components/modals/user_details';
+import PayedHistoryModal from '../components/modals/payedHistory';
+
 import { roundeNumber } from '../utils/helper';
 const monthFormat = "MM/YYYY";
 
 const Report = () => {
     const { confirm } = Modal;
   const [showDetailModal,setShowDetailModal]=useState(false)
+  const [showPayedHistoryModal,setShowPayedHistoryModal]=useState(false)
+
   const [loading, setLoading] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(moment());
   const [tableData,setTableData]=useState([])
@@ -53,16 +57,19 @@ const Report = () => {
        let totalAmount=0,totalCollections=0,totalPending=0,monthlyFoodExpense=0
       data.data.map(itm=>{
          const total=((perUserFoodExp*itm.totalNumberOfDays)+itm.totalOtherExpense)-itm.totalSpend.toFixed(2)
-        if(total>0){
+         let totalPayedAmount=0;
+         if(total>0){
          totalAmount+=total;
-         if(itm.config[0]?.payed)
-         totalCollections+=total;
-         else
-         totalPending+=total;
+         itm.config[0]?.paymentHistory?.map(payedAmount=>{
+          totalPayedAmount+=payedAmount.amount
+         })
+         totalCollections+=totalPayedAmount;
+         totalPending+=(total-totalPayedAmount);
         }
         newRecord.push({...itm,
             expense:((perUserFoodExp*itm.totalNumberOfDays)+itm.totalOtherExpense).toFixed(2),
-            total
+            total,
+            totalPayedAmount
         })
         //calculate monthly food expense
         monthlyFoodExpense+=itm.totalSpend;
@@ -111,22 +118,30 @@ const Report = () => {
         title: "Payed",
         dataIndex: "payed",
         key: "payed",
-        render: (_, record) => (
-          <>
-              <Checkbox
-                onChange={() => onConfirmModal(record,record?.config[0]?.payed)}
-                checked={record?.config[0]?.payed}
-              />
+        render:(_,record)=>(
+          <div style={{cursor:"pointer",color:"blue"}}
+          onClick={()=>{
+            setSelectedObj(record)
+            setShowPayedHistoryModal(true)
+          }}
+          >{record.totalPayedAmount}</div>
+      )
+        // render: (_, record) => (
+        //   <>
+        //       <Checkbox
+        //         onChange={() => onConfirmModal(record,record?.config[0]?.payed)}
+        //         checked={record?.config[0]?.payed}
+        //       />
             
-          </>
-        ),
+        //   </>
+        // ),
       },
   ]
 
    const handlePay=async(record,payed)=>{
     try{
       setLoading(true)
-     let data={payed:!payed}
+     let data={payed:!payed,paymentHistory:[{amount:10,comments:"test 123"}]}
      if(record.config.length){
        data.id=record.config[0]._id
      }else{
@@ -198,6 +213,17 @@ const Report = () => {
            selectedObj={selectedObj}
           />
       }
+
+{
+          showPayedHistoryModal&&
+          <PayedHistoryModal
+           show={showPayedHistoryModal}
+           setShow={()=>setShowPayedHistoryModal(false)}
+           selectedObj={selectedObj}
+           onFetchAllReports={onFetchAllReports}
+          />
+      }
+
       <div style={{padding:"0 15px",lineHeight:"30px"}}>
       <div style={{display:"flex",justifyContent:"space-between"}}>
           <label>Food Expense:</label>

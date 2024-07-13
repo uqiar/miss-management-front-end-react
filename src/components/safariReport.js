@@ -15,7 +15,8 @@ const Report=({currentTab})=>{
         received_petrol:0,
         reviews:0,
         salik:0,
-        pending_petrol:0
+        pending_petrol:0,
+        other:0
      })
     useEffect(() => {
         findSafariReport()
@@ -34,7 +35,8 @@ const Report=({currentTab})=>{
                 received_petrol:0,
                 reviews:0,
                 salik:0,
-                pending_petrol:0
+                pending_petrol:0,
+                other:0
             }
             doc?.data?.map(itm=>{
                 newData.bike+=itm?.bike||0;
@@ -43,6 +45,7 @@ const Report=({currentTab})=>{
                 newData.received_petrol+=itm?.received_petrol||0;
                 newData.reviews+=itm?.reviews||0;
                 newData.salik+=itm?.salik||0;
+                newData.other+=itm?.other||0;
             })
         newData.pending_petrol=newData.petrol-newData.received_petrol
             setData(newData)
@@ -113,6 +116,11 @@ const Report=({currentTab})=>{
           <div className='mini_card' style={{background:'#050505'}}>
             <p>Pending Petrol</p>
             <span>{data.pending_petrol}</span>
+          </div>
+
+          <div className='mini_card' style={{background:'#050505'}}>
+            <p>Total Other</p>
+            <span>{data.other}</span>
           </div>
           </div>
         </>

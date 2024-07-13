@@ -186,6 +186,15 @@ const DailyEntry = () => {
                         onChange={handleChange}
                     />
                 </div>
+                <div className='input_mobile_class'>
+                    <span>Other</span>
+                    <Input
+                        value={formData?.other}
+                        type={"number"}
+                        name="other"
+                        onChange={handleChange}
+                    />
+                </div>
                 <div style={{ marginTop: "20px" }}>
                     <Button disabled={loading} onClick={handleSubmit} type="primary">Submit</Button>
                 </div>
