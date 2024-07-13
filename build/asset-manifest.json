@@ -1,17 +1,17 @@
 {
   "files": {
     "main.css": "/static/css/main.04beffa2.css",
-    "main.js": "/static/js/main.affc7510.js",
+    "main.js": "/static/js/main.3a4ba3a0.js",
     "static/js/787.2d980fbd.chunk.js": "/static/js/787.2d980fbd.chunk.js",
     "static/media/Peshawar.png": "/static/media/Peshawar.44f15b06536d9706bad8.png",
     "service-worker.js": "/service-worker.js",
     "index.html": "/index.html",
     "main.04beffa2.css.map": "/static/css/main.04beffa2.css.map",
-    "main.affc7510.js.map": "/static/js/main.affc7510.js.map",
+    "main.3a4ba3a0.js.map": "/static/js/main.3a4ba3a0.js.map",
     "787.2d980fbd.chunk.js.map": "/static/js/787.2d980fbd.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.04beffa2.css",
-    "static/js/main.affc7510.js"
+    "static/js/main.3a4ba3a0.js"
   ]
 }
