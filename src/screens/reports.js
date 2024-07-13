@@ -25,6 +25,9 @@ const Report = () => {
       pageSize: 5,
     },
   });
+
+  let date1 = moment(new Date(selectedMonth));
+  let date2 = moment(new Date("05/01/2024"));
   const [totalCalReport,setTotalCalReport]=useState({
     total:0,
     collected:0,
@@ -35,6 +38,9 @@ const Report = () => {
   useEffect(() => {
     onFetchAllReports();
   }, [selectedMonth]);
+
+
+
 
   const onFetchAllReports = async () => {
     try {
@@ -63,8 +69,16 @@ const Report = () => {
          itm.config[0]?.paymentHistory?.map(payedAmount=>{
           totalPayedAmount+=payedAmount.amount
          })
-         totalCollections+=totalPayedAmount;
-         totalPending+=(total-totalPayedAmount);
+         if(date1.isAfter(date2)){
+          totalCollections+=totalPayedAmount;
+          totalPending+=(total-totalPayedAmount);
+         }else{
+          if(itm.config[0]?.payed)
+          totalCollections+=total;
+        else
+        totalPending+=total;
+         }
+         
         }
         newRecord.push({...itm,
             expense:((perUserFoodExp*itm.totalNumberOfDays)+itm.totalOtherExpense).toFixed(2),
@@ -118,14 +132,23 @@ const Report = () => {
         title: "Payed",
         dataIndex: "payed",
         key: "payed",
-        render:(_,record)=>(
+        render:(_,record)=>{
+          if(date1.isAfter(date2))
+          return (
           <div style={{cursor:"pointer",color:"blue"}}
           onClick={()=>{
             setSelectedObj(record)
             setShowPayedHistoryModal(true)
           }}
           >{record.totalPayedAmount}</div>
-      )
+          )
+          else
+          return <Checkbox
+        onChange={() => onConfirmModal(record,record?.config[0]?.payed)}
+        checked={record?.config[0]?.payed}
+      />
+        
+      }
         // render: (_, record) => (
         //   <>
         //       <Checkbox
