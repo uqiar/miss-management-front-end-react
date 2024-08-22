@@ -185,17 +185,21 @@ const DetailsModal = ({ show, setShow, selectedObj, onFetchAllReports }) => {
                 <div style={{ display: 'flex', justifyContent: "space-between", fontWeight: "bold" }}>
                     <div>Total payable Amount</div>
                     <div>=</div>
-                    <div>{(+selectedObj.total).toFixed(2)}</div>
+                    <div>{(+selectedObj.total)}</div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: "space-between", fontWeight: "bold" }}>
                     <div>Total payed Amount</div>
                     <div>=</div>
-                    <div>{(+selectedObj.totalPayedAmount).toFixed(2)}</div>
+                    <div>{(+selectedObj.totalPayedAmount)}</div>
                 </div>
                 <div style={{ display: 'flex', justifyContent: "space-between", fontWeight: "bold" }}>
                     <div>Total Remain Amount</div>
                     <div>=</div>
-                    <div>{(+selectedObj.total - selectedObj.totalPayedAmount).toFixed(2)}</div>
+                    <div 
+                    onClick={()=>{
+                       setNewPayment((+selectedObj.total - selectedObj.totalPayedAmount)) 
+                    }}
+                    style={{color:"blue",cursor:"pointer"}}>{(+selectedObj.total - selectedObj.totalPayedAmount)}</div>
                 </div>
 
             </div>

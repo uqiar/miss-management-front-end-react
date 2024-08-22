@@ -147,7 +147,7 @@ const OtherExpense = () => {
               setSelectedObj(record);
               setAddForm({
                 note: record.note,
-                amount: record.amount*record.user.length,
+                amount: record.amount * record.user.length,
                 user: record.user.map(itm => itm._id),
                 date: moment(record.copyDate).format("YYYY-MM-DD"),
               });
@@ -203,7 +203,7 @@ const OtherExpense = () => {
         return;
       }
       let reqBody = [];
-      if (isMonthly) { 
+      if (isMonthly) {
         let selectedUsers = {};
         expenseDivideOnDays().map(itm => {
           const obj = itm.days.toString();
@@ -222,7 +222,7 @@ const OtherExpense = () => {
           reqBody.push(val)
         })
       } else {
-        reqBody.push({ ...addFrom, amount: (+addFrom.amount)/addFrom.user.length })
+        reqBody.push({ ...addFrom, amount: (+addFrom.amount) / addFrom.user.length })
       }
       setLoading(true);
       if (selectedObj._id) {
@@ -408,6 +408,25 @@ const OtherExpense = () => {
               />
             </div>
           }
+
+          <Select
+            //mode="ta"
+            status={!addFrom.user ? "error" : ""}
+            style={{ width: "100%" }}
+            showSearch={true}
+            filterOption={(input, option) =>
+              option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
+            }
+            value={addFrom.user?{key:"note",value:"note",label:addFrom.note}:{}}
+            placeholder={"Select user"}
+            onChange={(e, obj) => {
+              setAddForm({ ...addFrom, note: obj?.label })
+            }}
+            options={["Sewa Bill","internet Bill","Room Rent","Batti Bill"].map((option, key) => {
+              return { value: option, label: option, key: "key" + key }
+            })}
+
+          />
           <Input
             status={!addFrom.note ? "error" : ""}
             size="large"
