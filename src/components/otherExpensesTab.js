@@ -41,6 +41,7 @@ const OtherExpense = () => {
     amount: "",
     user: [],
     date: new Date(),
+    details:""
   });
   const [allUsers, setAllUsers] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -149,6 +150,7 @@ const OtherExpense = () => {
                 note: record.note,
                 amount: record.amount * record.user.length,
                 user: record.user.map(itm => itm._id),
+                details:record?.details||"",
                 date: moment(record.copyDate).format("YYYY-MM-DD"),
               });
               setShowAddModal(true);
@@ -411,13 +413,13 @@ const OtherExpense = () => {
 
           <Select
             //mode="ta"
-            status={!addFrom.user ? "error" : ""}
+            status={!addFrom.note ? "error" : ""}
             style={{ width: "100%" }}
             showSearch={true}
             filterOption={(input, option) =>
               option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
             }
-            value={addFrom.user?{key:"note",value:"note",label:addFrom.note}:{}}
+            value={addFrom.note?{key:"note",value:"note",label:addFrom.note}:{}}
             placeholder={"Select user"}
             onChange={(e, obj) => {
               setAddForm({ ...addFrom, note: obj?.label })
@@ -428,11 +430,10 @@ const OtherExpense = () => {
 
           />
           <Input
-            status={!addFrom.note ? "error" : ""}
             size="large"
             placeholder="Note"
-            value={addFrom.note}
-            onChange={(e) => setAddForm({ ...addFrom, note: e.target.value })}
+            value={addFrom.details}
+            onChange={(e) => setAddForm({ ...addFrom, details: e.target.value })}
           />
           <Button onClick={handleSubmit} type="primary" block>
             Submit

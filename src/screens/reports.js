@@ -4,7 +4,7 @@ import { toast } from "react-toastify";
 import dayjs from "dayjs";
 import moment from "moment";
 import { DatePicker, Checkbox, Table, Spin, Modal, Input } from "antd";
-import { ExclamationCircleFilled, ArrowDownOutlined,ArrowUpOutlined } from "@ant-design/icons";
+import { ExclamationCircleFilled, ArrowDownOutlined,ArrowUpOutlined,SearchOutlined } from "@ant-design/icons";
 import DetailsModal from '../components/modals/user_details';
 import PayedHistoryModal from '../components/modals/payedHistory';
 
@@ -19,6 +19,8 @@ const Report = () => {
   const [loading, setLoading] = useState(false);
   const [selectedMonth, setSelectedMonth] = useState(moment());
   const [tableData, setTableData] = useState([])
+  const [data, setData] = useState([])
+
   const [tableParams, setTableParams] = useState({
     pagination: {
       current: 1,
@@ -100,6 +102,7 @@ const Report = () => {
       newRecord.sort((a, b) => b.totalSpend - a.totalSpend);
 
       setTableData(newRecord)
+      setData(newRecord)
       setLoading(false);
 
       let addingOtherExpense = 0;
@@ -228,6 +231,18 @@ const Report = () => {
   const handleMonthChange = (e, date) => {
     setSelectedMonth(e);
   };
+
+  const handleSearchName=(e)=>{
+    let toSearch = e.target.value.toLowerCase();
+    if(!toSearch)
+    return setTableData(data)
+    let result = data.filter(o => {
+      let isFind = o.name.toLowerCase().includes(toSearch);
+      if (isFind) return true;
+    });
+    setTableData(result);
+  }
+
   return <>
     <div style={{ display: "flex", justifyContent: "space-between" }}>
       <DatePicker
@@ -241,6 +256,14 @@ const Report = () => {
         format={monthFormat}
         picker="month"
       />
+      <Input
+      style={{marginLeft:"10px"}}
+        size="large"
+        placeholder="Search By Name"
+         prefix={<SearchOutlined />}
+         onChange={handleSearchName}
+        />
+
     </div>
 
     <Table

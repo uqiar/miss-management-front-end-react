@@ -25,7 +25,7 @@ const DetailsModal = ({ show, setShow, selectedObj }) => {
                     {
                         selectedObj.otherExpenses?.map((itm, key) => (
                             <div style={{ display: 'flex', justifyContent: "space-between", fontWeight: "bold" }} key={"otherExpense" + key}>
-                                <div style={{ fontWeight: 500 }}>{itm.note}</div>
+                                <div style={{ fontWeight: 500 }}>{`${itm.note} ${itm.details?("("+itm.details+")"):""}`}</div>
                                 <div>{"+" + itm.amount.toFixed(2)}</div>
                             </div>
                         ))
